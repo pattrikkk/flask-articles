@@ -1,0 +1,78 @@
+.txt-color {
+    color: #4A525D;
+}
+
+.main-heading {
+    font-weight: 300;
+    font-size: large;
+}
+
+.img-div {
+    min-height: 250px;
+    background-color: #E8ECEF;
+}
+
+.img-content {
+    height: 60px;
+}
+
+.fw-300 {
+    font-weight: 300;
+}
+
+.card-date {
+    font-size: small;
+}
+
+.border-custom {
+    border-color: #E8ECEF;
+}
+
+.txt-color-2 {
+    color: #FEF2F2;
+}
+
+.txt-color-3 {
+    color: #3F4751;
+}
+
+.txt-color-4 {
+    color: #F53163;
+}
+
+.txt-color-5 {
+    color: #606F84;
+}
+
+.div-bg {
+    background-image: url('https://i.ibb.co/tHVW3PB/Group-3959-8.png');
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+}
+
+.div-bg-2 {
+    background-image: url('https://i.ibb.co/9Z8LH61/Slider-6.png');
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+}
+
+.div-footer {
+    background-color: #B6666F;
+    min-height: 8em;
+}
+
+.mt-text {
+    margin-top: 15em;
+}
+
+.txt-chuducky {
+    font-weight: 100;
+}
+
+.btn-fufiary {
+    color: #3F4751;
+    background-color: #FEF2F2;
+    min-width: 10em;
+}

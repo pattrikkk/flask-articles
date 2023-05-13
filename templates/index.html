@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/styles.css') }}">
+
+    <title>Articles</title>
+</head>
+
+<body>
+    <div class="container container-fluid">
+        {% include 'nav.html' %}
+        <h1 class="text-center txt-color">Articles</h1>
+        <div class="container col-offset-2 col-8">
+            <h5 class="text-center mt-4 mb-5 txt-color main-heading">
+                There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in form. Lorem ipsum dolor sit amet, cons ectetuer adipiscing elit.
+            </h5>
+        </div>
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-sm-12 col-md-6 col-xl-4 txt-color">
+                <a href="{{ url_for('show_article', _id=article['_id']) }}" class="text-decoration-none">
+                    <div class="card mb-3 rounded-3">
+                        <div class="d-flex justify-content-center align-items-center img-div">
+                            <img class="img-content" src="https://i.ibb.co/Y7ZNfbJ/placeholder.png" alt="Card image cap">
+                        </div>
+                        <div class="card-body txt-color p-4">
+                            <p class="card-date fw-300 mt-2 mb-1">{{ article.date }}</p>
+                            <h5 class="card-title mb-3">{{ article.title }}</h5>
+                            <p class="card-text fw-300 text-truncate">{{ article.body }}</p>
+                            <div class="row">
+                                <div class="col-8 card-text"></div>
+                                <div class="col-4 pe-0">
+                                    <div class="d-flex flex-row-reverse">
+                                        {% if session['_id'] == article['author'] %}
+                                        <form action="{{ url_for('delete', _id=article['_id']) }}" method="POST">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-danger mx-2">Delete</button>
+                                        </form>   
+                                        <form action="{{ url_for('edit', _id=article['_id']) }}" method="GET">
+                                            <button type="submit" class="btn btn-primary mx-2">Edit</button>
+                                        </form>    
+                                        {% endif %}                                 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+
+</html>

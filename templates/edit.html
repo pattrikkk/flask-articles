@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/styles.css') }}">
+
+    <title>Edit an article</title>
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="container container-fluid">
+        {% include 'nav.html' %}
+        <h1 class="text-center txt-color">Edit an article</h1>
+        <div class="container col-offset-2 col-8">
+            <h5 class="text-center mt-4 mb-5 txt-color main-heading">
+                Here you can edit an article. Just fill in the form below and click on the "Edit" button.
+            </h5>
+        </div>
+        <div>
+
+        </div>
+        <div class="container container-fluid">
+            <form method="POST" action="{{ url_for('edit', _id=article['_id']) }}">
+                <input type="text" name="title" class="form-control my-1" placeholder="Title" value="{{article['title']}}" required>
+                <input type="date" name="date" class="form-control my-1" placeholder="Date" value="{{article['date']}}" required>
+                <textarea type="textarea" name="body" class="form-control my-1" rows="10" placeholder="Text..." required>{{article['body']}}</textarea>
+                <input type="submit" class="btn btn-primary my-1" value="Edit">
+            </form>
+        </div> 
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+
+</html>
