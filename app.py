@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, redirect, session
+from flask_wtf.csrf import CSRFProtect
+from werkzeug.utils import secure_filename
 import datetime
 from flask_pymongo import pymongo
 from bson import ObjectId
+import os
 
 
 CONNECTION_STRING = "mongodb+srv://patrikhorvath2:auticko123@ukf.cxxnmkn.mongodb.net/?retryWrites=true&w=majority"
@@ -13,7 +16,9 @@ comment_collection = pymongo.collection.Collection(db, 'comments')
 
 
 app = Flask(__name__)
-app.secret_key = 'RrGbtgj71ohV5cr195HgElCDC6amRlN3'
+csrf = CSRFProtect(app)
+app.secret_key = os.urandom(12).hex()
+app.config['UPLOAD_FOLDER'] = 'static/thumbnails'
 
 @app.route('/')
 def show():
@@ -25,6 +30,7 @@ def show():
     return render_template('index.html', articles=articles)
 
 @app.route('/login', methods=('GET', 'POST'))
+@csrf.exempt
 def login():
     if '_id' in session:
         return redirect('/')
@@ -42,6 +48,7 @@ def login():
         return render_template('login.html')
 
 @app.route('/register', methods=('GET', 'POST'))
+@csrf.exempt
 def register():
     if '_id' in session:
         return redirect('/')
@@ -76,6 +83,7 @@ def logout():
     return redirect('/')
 
 @app.route('/create', methods=('GET', 'POST'))
+@csrf.exempt
 def create():
     if '_id' not in session:
         return redirect('/login')
@@ -85,6 +93,8 @@ def create():
         date = request.form['date']
         text = request.form['body']
         author = db.users.find_one({"username": session['username']})['_id']
+        file = request.files['thumbnail']
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(_id) + '.jpg'))
         article_collection.insert_one(
         {
             "_id": _id,
@@ -98,6 +108,7 @@ def create():
         return render_template("create.html") 
 
 @app.route("/delete/<string:_id>/", methods=('GET', 'POST'))
+@csrf.exempt
 def delete(_id):
     if '_id' not in session:
         return redirect('/login')
@@ -108,6 +119,7 @@ def delete(_id):
     return redirect('/')
 
 @app.route('/edit/<string:_id>/', methods=('GET', 'POST'))
+@csrf.exempt
 def edit(_id):
     article = db.articles.find_one({"_id": ObjectId(_id)})
     if '_id' not in session:
@@ -142,6 +154,7 @@ def show_article(_id):
     return render_template('article.html', article=article, comments=comments)
 
 @app.route('/add_comment/<string:_id>/', methods=['POST'])
+@csrf.exempt
 def add_comment(_id):
     if '_id' not in session:
         return redirect('/login')

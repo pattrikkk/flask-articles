@@ -14,26 +14,32 @@
 <body>
     <div class="container container-fluid">
         {% include 'nav.html' %}
-        <h1 class="txt-color mx-2">{{article.title}}</h1>
-        <div class="mx-5">
-            <h5 class="text-justify mt-4 mb-5 txt-color main-heading">
-                {{article.body}}
-            </h5>
-        </div>
-        {% if session['_id'] %}
-        <form method="POST" action="{{ url_for('add_comment', _id=article['_id']) }}">
-            <input type="text" name="text" class="form-control my-1" placeholder="Comment" required>
-            <input type="submit" class="btn btn-primary my-1 w-100" value="Add">
-        </form>
-        {% endif %}
-        {%for comment in comments%}
-        <div class="card mb-3 rounded-3">
-            <div class="card-body txt-color p-4">
-                <p class="card-date fw-300 mt-2 mb-1">{{ comment.author }}</p>
-                <p class="card-text fw-300 text-truncate">{{ comment.text }}</p>
+        <div class="body">
+            <img class="article-img" src="{{ url_for('static', filename='thumbnails/' + article._id|string + '.jpg') }}" alt="Card image cap">
+            <div class="mx-5">
+                <h1 class="txt-color mx-2">{{article.title}}</h1>
+                <hr>
+                <h5 class="text-justify mt-4 mb-5 txt-color main-heading">
+                    {{article.body}}
+                </h5>
+                <hr>
+                {% if session['_id'] %}
+                <form method="POST" action="{{ url_for('add_comment', _id=article['_id']) }}">
+                    <input type="text" name="text" class="form-control my-1" placeholder="Comment" required>
+                    <input type="submit" class="btn btn-primary my-1 w-100" value="Add">
+                </form>
+                {% endif %}
+                {%for comment in comments%}
+                <div class="mb-3">
+                    <div class="card-body txt-color p-4">
+                        <p class="card-date fw-300 mt-2 mb-1">{{ comment.author }}</p>
+                        <p class="card-text fw-300 text-truncate">{{ comment.text }}</p>
+                    </div>
+                </div>
+                <hr>
+                {%endfor%}
             </div>
         </div>
-        {%endfor%}
     </div>
 
 

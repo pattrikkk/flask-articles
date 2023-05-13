@@ -28,10 +28,11 @@
 
         </div>
         <div class="container container-fluid">
-            <form method="POST" action="{{ url_for('create') }}">
+            <form method="POST" action="{{ url_for('create') }}" enctype="multipart/form-data">
                 <input type="text" name="title" class="form-control my-1" placeholder="Title" required>
                 <input type="date" name="date" class="form-control my-1" placeholder="Date" required>
                 <textarea type="textarea" name="body" class="form-control my-1" rows="10" placeholder="Text..." required></textarea>
+                <input class="form-control" id="thumbnail" name="thumbnail" type="file" required/>
                 <input type="submit" class="btn btn-primary my-1" value="Create">
             </form>
         </div> 
