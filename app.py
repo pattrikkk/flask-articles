@@ -217,3 +217,17 @@ def admin_edit(_id):
             "is_admin": is_admin
         }})
         return redirect('/admin')
+
+@app.route('/admin/delete/<string:_id>/', methods=('GET', 'POST'))
+@csrf.exempt
+def admin_delete(_id):
+    if '_id' not in session:
+        return redirect('/login')
+    if not session['is_admin']:
+        return redirect('/')
+    if session['_id']==_id:
+        return redirect('/admin')
+    else:
+        obj_id = ObjectId(_id)
+        db.users.delete_one({"_id": obj_id})
+        return redirect('/admin')

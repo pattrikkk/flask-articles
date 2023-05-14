@@ -38,7 +38,19 @@
                     <input type="checkbox" name="is_admin" class="form-check-input">
                 {% endif %}
                 <label class="form-check-label" for="is_admin">Admin</label>
-                <input type="submit" class="btn btn-primary my-1" value="Edit">
+                {% if user['_id']|string == session['_id'] %}
+                    <input type="submit" class="btn btn-primary my-1" value="Save" disabled>
+                {% else %}
+                    <input type="submit" class="btn btn-primary my-1" value="Save">
+                {% endif %}
+            </form>
+            <form method="POST" action="{{ url_for('admin_delete', _id=user['_id']) }}">
+                <input type="hidden" name="id" value="{{user['_id']}}">
+                {% if user['_id']|string == session['_id'] %}
+                    <input type="submit" class="btn btn-danger my-1" value="Delete" disabled>
+                {% else %}
+                    <input type="submit" class="btn btn-danger my-1" value="Delete">
+                {% endif %}
             </form>
             <hr>
             {%endfor%}

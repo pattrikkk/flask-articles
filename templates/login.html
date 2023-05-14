@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container mt-4">
+    <div class="container container-fluid">
+        {% include 'nav.html' %}
         <h1>Login</h1>
         {% if success %}
             <div class="alert alert-success">{{ success }}</div>
