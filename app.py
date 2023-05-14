@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, session
+from flask_paginate import Pagination, get_page_parameter
 from flask_wtf.csrf import CSRFProtect
-from werkzeug.utils import secure_filename
 import datetime
 from flask_pymongo import pymongo
 from bson import ObjectId
@@ -27,7 +27,13 @@ def show():
         article['author'] = str(article['author'])
         articles.append(article)
 
-    return render_template('index.html', articles=articles)
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    per_page = 6
+    offset = (page - 1) * per_page
+    paginateditems = articles[offset:offset + per_page]
+
+    pagination = Pagination(page=page, total=len(articles), record_name='articles', css_framework='bootstrap5', per_page=per_page)
+    return render_template('index.html', articles=paginateditems, pagination=pagination)
 
 @app.route('/login', methods=('GET', 'POST'))
 @csrf.exempt
@@ -41,6 +47,7 @@ def login():
         if user:
             session['_id'] = str(user['_id'])
             session['username'] = user['username']
+            session['is_admin'] = user['is_admin']
             return redirect('/')
         else: 
             return render_template('login.html', error='Incorrect username or password')
@@ -68,7 +75,8 @@ def register():
             "_id": ObjectId(),
             "username": username,
             "email": email,
-            "password": password
+            "password": password,
+            "is_admin": False,
         })
         return render_template('login.html', success='Registration successful. You can now log in.')
     else:
@@ -80,6 +88,7 @@ def logout():
         return redirect('/')
     session.pop('username', None)
     session.pop('_id', None)
+    session.pop('is_admin', None)
     return redirect('/')
 
 @app.route('/create', methods=('GET', 'POST'))
@@ -113,7 +122,7 @@ def delete(_id):
     if '_id' not in session:
         return redirect('/login')
     author = db.articles.find_one({"_id": ObjectId(_id)})['author']
-    if session['_id']==str(author):
+    if session['_id']==str(author) or session['is_admin']:
         obj_id = ObjectId(_id)
         article_collection.delete_one({"_id": obj_id})
     return redirect('/')
@@ -124,13 +133,16 @@ def edit(_id):
     article = db.articles.find_one({"_id": ObjectId(_id)})
     if '_id' not in session:
         return redirect('/login')
-    if str(article['author'])!=session['_id']:
+    if str(article['author'])!=session['_id'] and not session['is_admin']:
         return redirect('/')
     if request.method=='POST':
         _id = ObjectId(_id)
         title = request.form['title']
         date = request.form['date']
         text = request.form['body']
+        if request.files['thumbnail'].filename!='':
+            file = request.files['thumbnail']
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(_id) + '.jpg'))
         article_collection.update_one({"_id": _id},
         {'$set': {
             "_id": _id,
@@ -151,6 +163,7 @@ def show_article(_id):
     for comment in comments_cursor:
         comment['author'] = db.users.find_one({"_id": comment['author']})['username']
         comments.append(comment)
+    article['authorname'] = db.users.find_one({"_id": ObjectId(article['author'])})['username']
     return render_template('article.html', article=article, comments=comments)
 
 @app.route('/add_comment/<string:_id>/', methods=['POST'])
@@ -170,3 +183,37 @@ def add_comment(_id):
         "date": datetime.datetime.now()
     })
     return redirect('/' + str(_id)) 
+
+@app.route('/admin/', methods=('GET', 'POST'))
+@csrf.exempt
+def admin():
+    if '_id' not in session:
+        return redirect('/login')
+    if not session['is_admin']:
+        return redirect('/')
+    else:
+        users = []
+        for user in db.users.find():
+            users.append(user)
+        return render_template('admin.html', users=users)
+    
+@app.route('/admin/edit/<string:_id>/', methods=('GET', 'POST'))
+@csrf.exempt
+def admin_edit(_id):
+    if '_id' not in session:
+        return redirect('/login')
+    if not session['is_admin']:
+        return redirect('/')
+    if session['_id']==_id:
+        return redirect('/admin')
+    else:
+        is_admin = request.form.get('is_admin')
+        if is_admin=='on':
+            is_admin = True
+        else:
+            is_admin = False
+        db.users.update_one({"_id": ObjectId(_id)},
+        {'$set': {
+            "is_admin": is_admin
+        }})
+        return redirect('/admin')

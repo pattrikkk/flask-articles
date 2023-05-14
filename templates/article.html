@@ -15,12 +15,17 @@
     <div class="container container-fluid">
         {% include 'nav.html' %}
         <div class="body">
-            <img class="article-img" src="{{ url_for('static', filename='thumbnails/' + article._id|string + '.jpg') }}" alt="Card image cap">
+            <img class="article-img my-4" src="{{ url_for('static', filename='thumbnails/' + article._id|string + '.jpg') }}" alt="Card image cap">
             <div class="mx-5">
                 <h1 class="txt-color mx-2">{{article.title}}</h1>
+                <p class="card-date fw-300 mt-2 mx-2">{{ article.date }} - {{ article.authorname }}</p>
                 <hr>
-                <h5 class="text-justify mt-4 mb-5 txt-color main-heading">
+                <h5 class="text-justify mt-4 mb-4 txt-color main-heading">
                     {{article.body}}
+                </h5>
+                <hr>
+                <h5 class="text-justify txt-color main-heading">
+                    Comments - {{ comments|length }}
                 </h5>
                 <hr>
                 {% if session['_id'] %}
@@ -30,11 +35,9 @@
                 </form>
                 {% endif %}
                 {%for comment in comments%}
-                <div class="mb-3">
-                    <div class="card-body txt-color p-4">
-                        <p class="card-date fw-300 mt-2 mb-1">{{ comment.author }}</p>
-                        <p class="card-text fw-300 text-truncate">{{ comment.text }}</p>
-                    </div>
+                <div class="mx-4 my-3 txt-color">
+                    <p class="card-date fw-300 mt-1 mb-1">{{ comment.author }}</p>
+                    <p class="card-text fw-300 text-truncate">{{ comment.text }}</p>
                 </div>
                 <hr>
                 {%endfor%}

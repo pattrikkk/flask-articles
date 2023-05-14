@@ -18,7 +18,7 @@
             <h1 class="text-center txt-color">Articles</h1>
             <div class="container col-offset-2 col-8">
                 <h5 class="text-center mt-4 mb-5 txt-color main-heading">
-                    There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in form. Lorem ipsum dolor sit amet, cons ectetuer adipiscing elit.
+                    Here you can see all the articles. Click on the article to see more details. If you are logged in, you can also edit or delete your articles.
                 </h5>
             </div>
             <div class="row">
@@ -35,7 +35,7 @@
                                     <div class="col-8 card-text"></div>
                                     <div class="col-4 pe-0">
                                         <div class="d-flex flex-row-reverse">
-                                            {% if session['_id'] == article['author'] %}
+                                            {% if session['_id'] == article['author'] or session['is_admin'] %}
                                             <form action="{{ url_for('delete', _id=article['_id']) }}" method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="btn btn-danger mx-2">Delete</button>
@@ -52,12 +52,13 @@
                     </a>
                 </div>
                 {% endfor %}
+                {{ pagination.info }}
+                {{ pagination.links }}
             </div>
         </div>
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
-
 </html>
