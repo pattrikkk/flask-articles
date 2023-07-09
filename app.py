@@ -7,7 +7,7 @@ from bson import ObjectId
 import os
 
 
-CONNECTION_STRING = "mongodb+srv://patrikhorvath2:auticko123@ukf.cxxnmkn.mongodb.net/?retryWrites=true&w=majority"
+CONNECTION_STRING = ""
 
 client = pymongo.MongoClient(CONNECTION_STRING)
 db = client.get_database('blog')
